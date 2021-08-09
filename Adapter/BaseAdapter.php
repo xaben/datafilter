@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Xaben\DataFilter\Adapter;
 
-use Xaben\DataFilter\Definition\FilterDefinitionInterface;
+use Xaben\DataFilter\Definition\FilterDefinition;
 use Xaben\DataFilter\Filter\CollectionFilter;
 use Xaben\DataFilter\Formatter\Formatter;
-use Symfony\Component\HttpFoundation\Request;
 
 abstract class BaseAdapter
 {
@@ -19,24 +18,24 @@ abstract class BaseAdapter
     }
 
     public function process(
-        string | FilterDefinitionInterface $definition,
-        Request $request,
+        string | FilterDefinition $definition,
+        array $requestParameters,
         CollectionFilter $collectionFilter = null
     ): array {
         $definition = $this->initializeDefinition($definition);
-        $filter = $this->getFilter($definition, $request, $collectionFilter);
+        $filter = $this->getFilter($definition, $requestParameters, $collectionFilter);
         $data = $definition->getRepositoryService()->findFiltered($filter);
 
         return $this->formatter->format($data, $definition->getTransformerService());
     }
 
-    private function initializeDefinition(string | FilterDefinitionInterface $definition): FilterDefinitionInterface
+    private function initializeDefinition(string | FilterDefinition $definition): FilterDefinition
     {
-        if ($definition instanceof FilterDefinitionInterface) {
+        if ($definition instanceof FilterDefinition) {
             return $definition;
         }
 
-        if (!in_array(FilterDefinitionInterface::class, class_implements($definition))) {
+        if (!in_array(FilterDefinition::class, class_implements($definition))) {
             throw new \Exception(
                 sprintf('%s does not implement FilterDefinitionInterface interface.', $definition)
             );
@@ -46,63 +45,36 @@ abstract class BaseAdapter
     }
 
     public function getFilter(
-        FilterDefinitionInterface $definition,
-        Request $request,
+        FilterDefinition $definition,
+        array $requestParameters,
         CollectionFilter $collectionFilter = null
     ): CollectionFilter {
         if (is_null($collectionFilter)) {
             $collectionFilter = new CollectionFilter($definition);
         }
 
-        $this->processPagination($definition, $request, $collectionFilter);
-        $this->processSortable($definition, $request, $collectionFilter);
-        $this->processFilters($definition, $request, $collectionFilter);
+        $this->processPagination($definition, $requestParameters, $collectionFilter);
+        $this->processSortable($definition, $requestParameters, $collectionFilter);
+        $this->processFilters($definition, $requestParameters, $collectionFilter);
 
         return $collectionFilter;
     }
 
-    /**
-     * Prepare query params for pagination
-     *
-     * @param FilterDefinitionInterface $definition
-     * @param Request $request
-     * @param CollectionFilter $collectionFilter
-     *
-     * @return mixed
-     */
     abstract protected function processPagination(
-        FilterDefinitionInterface $definition,
-        Request $request,
+        FilterDefinition $definition,
+        array $requestParameters,
         CollectionFilter $collectionFilter
     ): void;
 
-    /**
-     * Prepare query params for sortable
-     *
-     * @param FilterDefinitionInterface $definition
-     * @param Request $request
-     * @param CollectionFilter $collectionFilter
-     *
-     * @return mixed
-     */
     abstract protected function processSortable(
-        FilterDefinitionInterface $definition,
-        Request $request,
+        FilterDefinition $definition,
+        array $requestParameters,
         CollectionFilter $collectionFilter
     ): void;
 
-    /**
-     * Prepare query params for filters
-     *
-     * @param FilterDefinitionInterface $definition
-     * @param Request $request
-     * @param CollectionFilter $collectionFilter
-     *
-     * @return mixed
-     */
     abstract protected function processFilters(
-        FilterDefinitionInterface $definition,
-        Request $request,
+        FilterDefinition $definition,
+        array $requestParameters,
         CollectionFilter $collectionFilter
     ): void;
 }

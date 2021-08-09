@@ -8,13 +8,13 @@ use Xaben\DataFilter\Exception\InvalidFilterException;
 
 class FilterBag
 {
-    /** @var FilterInterface[] */
+    /** @var Filter[] */
     private array $filters;
 
-    /** @var FilterInterface[] */
+    /** @var Filter[] */
     private array $filtersByName;
 
-    /** @var FilterInterface[] */
+    /** @var Filter[] */
     private array $filtersByIndex;
 
     public function __construct(array $filters = [])
@@ -27,7 +27,7 @@ class FilterBag
     private function validateFilters(array $filters): array
     {
         foreach ($filters as $filter) {
-            if (!$filter instanceof FilterInterface) {
+            if (!$filter instanceof Filter) {
                 throw new InvalidFilterException('Provided filter does not implement FilterInterface');
             }
         }
@@ -45,9 +45,9 @@ class FilterBag
         return $criteria;
     }
 
-    public function getFilterByName(string $name): ?FilterInterface
+    public function getFilterByName(string $name): ?Filter
     {
-        if ($this->filtersByName === null) {
+        if ($this->filtersByName === []) {
             $this->initNameIndex();
         }
 
@@ -72,9 +72,9 @@ class FilterBag
         }
     }
 
-    public function getFilterByIndex(int $index): ?FilterInterface
+    public function getFilterByIndex(int $index): ?Filter
     {
-        if ($this->filtersByIndex === null) {
+        if ($this->filtersByIndex === []) {
             $this->initNumericIndex();
         }
 

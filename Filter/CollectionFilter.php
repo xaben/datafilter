@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Xaben\DataFilter\Filter;
 
-use Xaben\DataFilter\Definition\FilterDefinitionInterface;
+use Xaben\DataFilter\Definition\FilterDefinition;
 
 class CollectionFilter
 {
-    protected FilterDefinitionInterface $definition;
+    protected FilterDefinition $definition;
 
-    protected array $criteria;
+    protected array $defaultCriteria;
+
+    protected array $userCriteria;
 
     protected array $predefinedCriteria;
 
@@ -20,26 +22,32 @@ class CollectionFilter
 
     protected int $limit;
 
-    public function __construct(FilterDefinitionInterface $definition)
+    public function __construct(FilterDefinition $definition)
     {
         $this->definition = $definition;
-        $this->criteria = [];
+        $this->defaultCriteria = [];
+        $this->userCriteria = [];
         $this->predefinedCriteria = [];
     }
 
-    public function getDefinition(): FilterDefinitionInterface
+    public function getDefinition(): FilterDefinition
     {
         return $this->definition;
     }
 
-    public function getCriteria(): array
+    public function setDefaultCriteria(array $defaultCriteria): void
     {
-        return $this->criteria;
+        $this->defaultCriteria = $defaultCriteria;
     }
 
-    public function setCriteria(array $criteria): void
+    public function setUserCriteria(array $userCriteria): void
     {
-        $this->criteria = $criteria;
+        $this->userCriteria = $userCriteria;
+    }
+
+    public function setPredefinedCriteria(array $predefinedCriteria)
+    {
+        $this->predefinedCriteria = $predefinedCriteria;
     }
 
     public function getPredefinedCriteria(): array
@@ -47,9 +55,13 @@ class CollectionFilter
         return $this->predefinedCriteria;
     }
 
-    public function setPredefinedCriteria(array $predefinedCriteria)
+    public function getAllCriteria(): array
     {
-        $this->predefinedCriteria = $predefinedCriteria;
+        return array_merge(
+            $this->defaultCriteria,
+            $this->userCriteria,
+            $this->predefinedCriteria,
+        );
     }
 
     public function getOffset(): int

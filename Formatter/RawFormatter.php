@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Xaben\DataFilter\Formatter;
 
 use Xaben\DataFilter\Filter\Result;
@@ -7,14 +9,7 @@ use Xaben\DataFilter\Transformer\Transformer;
 
 class RawFormatter implements Formatter
 {
-    /**
-     * @covers \App\Filter\Formatter\RawFormatter::format()
-     *
-     * @param Result $result
-     * @param Transformer $transformer
-     * @return array
-     */
-    public function format(Result $result, Transformer $transformer)
+    public function format(Result $result, Transformer $transformer): array
     {
         return [
             'recordsTotal' => $result->getTotalResults(),

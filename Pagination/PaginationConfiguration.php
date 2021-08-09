@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Xaben\DataFilter\Pagination;
 
 class PaginationConfiguration
@@ -8,16 +10,10 @@ class PaginationConfiguration
 
     public const MAX_RESULT_COUNT = 150;
 
-    /** @var int */
-    private $defaultResultCount;
+    private int $defaultResultCount;
 
-    /** @var int */
-    private $maxResultCount;
+    private int $maxResultCount;
 
-    /**
-     * @param int $defaultResultCount
-     * @param int $maxResultCount
-     */
     public function __construct(
         int $defaultResultCount = self::DEFAULT_RESULT_COUNT,
         int $maxResultCount = self::MAX_RESULT_COUNT
@@ -26,12 +22,7 @@ class PaginationConfiguration
         $this->maxResultCount = $maxResultCount;
     }
 
-    /**
-     * @param int $page
-     * @param int $limit
-     * @return array
-     */
-    public function getByPage(int $page, int $limit)
+    public function getByPage(int $page, int $limit): array
     {
         $limit = $this->validateLimit($limit);
 
@@ -43,10 +34,17 @@ class PaginationConfiguration
         return [$offset, $limit];
     }
 
-    /**
-     * @param int $limit
-     * @return int
-     */
+    public function getByOffset(int $offset, int $limit): array
+    {
+        $limit = $this->validateLimit($limit);
+
+        if ($offset < 0) {
+            $offset = 0;
+        }
+
+        return [$offset, $limit];
+    }
+
     private function validateLimit(int $limit): int
     {
         if ($limit <= 0) {
@@ -58,21 +56,5 @@ class PaginationConfiguration
         }
 
         return $limit;
-    }
-
-    /**
-     * @param int $offset
-     * @param int $limit
-     * @return array
-     */
-    public function getByOffset(int $offset, int $limit)
-    {
-        $limit = $this->validateLimit($limit);
-
-        if ($offset < 0) {
-            $offset = 0;
-        }
-
-        return [$offset, $limit];
     }
 }

@@ -11,7 +11,7 @@ use Xaben\DataFilter\Sort\SortBag;
 use Xaben\DataFilter\Transformer\Transformer;
 use Symfony\Component\HttpFoundation\Request;
 
-abstract class BaseFilterDefinition implements FilterDefinitionInterface
+abstract class BaseFilterDefinition implements FilterDefinition
 {
     private FilterableRepositoryInterface $repository;
 
@@ -40,12 +40,12 @@ abstract class BaseFilterDefinition implements FilterDefinitionInterface
         return new FilterBag();
     }
 
-    public function getDefaultFilterConfiguration(Request $request): FilterBag
+    public function getDefaultFilterConfiguration(array $requestParameters): FilterBag
     {
         return new FilterBag();
     }
 
-    public function getPredefinedFilterConfiguration(Request $request): FilterBag
+    public function getPredefinedFilterConfiguration(array $requestParameters): FilterBag
     {
         return new FilterBag();
     }
