@@ -4,17 +4,9 @@ declare(strict_types=1);
 
 namespace Xaben\DataFilter\Transformer;
 
-abstract class Transformer
+interface Transformer
 {
-    public function transformCollection(iterable $data): array
-    {
-        $result = [];
-        foreach ($data as $item) {
-            $result[] = $this->transform($item);
-        }
+    public function transformCollection(iterable $data): array;
 
-        return $result;
-    }
-
-    abstract public function transform(mixed $data): array;
+    public function transform(mixed $data): array;
 }
