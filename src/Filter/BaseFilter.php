@@ -13,7 +13,7 @@ abstract class BaseFilter implements Filter
 
     protected DataTypeInterface $dataType;
 
-    protected ?string $columnName;
+    protected string $columnName;
 
     protected array $options;
 
