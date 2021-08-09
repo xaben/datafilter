@@ -11,12 +11,13 @@
         "phpunit/phpunit": "^9.0"
     },
     "suggest": {
-        "xaben/filter-api": "For using API transformers",
-        "xaben/filter-datatables": "For using API transformers"
+        "xaben/filter-doctrine": "For using Doctrine as a data source",
+        "xaben/filter-api": "For using API Fractal integration",
+        "xaben/filter-datatables": "For using DataTables integration"
     },
     "autoload": {
         "psr-4": {
-            "Xaben\\DataFilter\\": ""
+            "Xaben\\DataFilter\\": "src/"
         }
     }
 }

@@ -18,13 +18,9 @@ class SortDefinition
 
     public function __construct(
         string|int $name,
-        ?string $columnName = null,
+        string $columnName,
         ?string $defaultSortOrder = null
     ) {
-        if ($columnName === null && !is_int($name)) {
-            $columnName = $name;
-        }
-
         if ($defaultSortOrder !== null) {
             $this->validateSortOrder($defaultSortOrder);
         }

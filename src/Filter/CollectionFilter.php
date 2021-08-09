@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Xaben\DataFilter\Filter;
 
 use Xaben\DataFilter\Definition\FilterDefinition;
+use Xaben\DataFilter\Pagination\PaginationConfiguration;
 
 class CollectionFilter
 {
@@ -28,6 +29,9 @@ class CollectionFilter
         $this->defaultCriteria = [];
         $this->userCriteria = [];
         $this->predefinedCriteria = [];
+        $this->sortOrder = [];
+        $this->offset = 0;
+        $this->limit = PaginationConfiguration::DEFAULT_RESULT_COUNT;
     }
 
     public function getDefinition(): FilterDefinition
@@ -45,7 +49,7 @@ class CollectionFilter
         $this->userCriteria = $userCriteria;
     }
 
-    public function setPredefinedCriteria(array $predefinedCriteria)
+    public function setPredefinedCriteria(array $predefinedCriteria): void
     {
         $this->predefinedCriteria = $predefinedCriteria;
     }
@@ -79,7 +83,7 @@ class CollectionFilter
         return $this->limit;
     }
 
-    public function setLimit(int $limit)
+    public function setLimit(int $limit): void
     {
         $this->limit = $limit;
     }

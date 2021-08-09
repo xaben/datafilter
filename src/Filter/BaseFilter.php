@@ -13,7 +13,7 @@ abstract class BaseFilter implements Filter
 
     protected DataTypeInterface $dataType;
 
-    protected string $columnName;
+    protected ?string $columnName;
 
     protected array $options;
 
@@ -22,14 +22,10 @@ abstract class BaseFilter implements Filter
     public function __construct(
         string | int $name,
         string | DataTypeInterface $dataType,
-        string $columnName = null,
+        string $columnName,
         array $options = [],
         mixed $defaultValue = null
     ) {
-        if ($columnName === null && !is_int($name)) {
-            $columnName = $name;
-        }
-
         $this->name = $name;
         $this->dataType = $this->prepareDataType($dataType);
         $this->columnName = $columnName;
@@ -44,7 +40,11 @@ abstract class BaseFilter implements Filter
                 throw new Exception('Unknown Data Type');
             }
 
-            return new $dataType();
+            $dataType = new $dataType();
+        }
+
+        if (!$dataType instanceof DataTypeInterface) {
+            throw new Exception('Unknown Data Type');
         }
 
         return $dataType;

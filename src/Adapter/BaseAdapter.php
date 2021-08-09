@@ -31,17 +31,21 @@ abstract class BaseAdapter
 
     private function initializeDefinition(string | FilterDefinition $definition): FilterDefinition
     {
-        if ($definition instanceof FilterDefinition) {
-            return $definition;
+        if (is_string($definition)) {
+            if (!class_exists($definition)) {
+                throw new \Exception('Unknown Class');
+            }
+
+            $definition = new $definition();
         }
 
-        if (!in_array(FilterDefinition::class, class_implements($definition))) {
+        if (!$definition instanceof FilterDefinition) {
             throw new \Exception(
-                sprintf('%s does not implement FilterDefinitionInterface interface.', $definition)
+                sprintf('%s does not implement FilterDefinitionInterface interface.', get_class($definition))
             );
         }
 
-        return new $definition();
+        return $definition;
     }
 
     public function getFilter(
