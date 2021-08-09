@@ -14,9 +14,6 @@ class SortBag
     /** @var SortDefinition[] */
     private ?array $sortDefinitionsByName;
 
-    /** @var SortDefinition[] */
-    private ?array $sortDefinitionsByIndex;
-
     public function __construct(array $sortDefinitions = [])
     {
         foreach ($sortDefinitions as $sortDefinition) {
@@ -26,15 +23,10 @@ class SortBag
         }
 
         $this->sortDefinitions = $sortDefinitions;
-        $this->sortDefinitionsByName = null;
-        $this->sortDefinitionsByIndex = null;
+        $this->initNameIndex();
     }
 
-    /**
-     * @param string $name
-     * @return null|SortDefinition
-     */
-    public function getSortDefinitionByName(string $name): ?SortDefinition
+    public function getSortDefinition(string|int $name): ?SortDefinition
     {
         if ($this->sortDefinitionsByName === null) {
             $this->initNameIndex();
@@ -45,9 +37,8 @@ class SortBag
 
     private function initNameIndex(): void
     {
-        if ($this->sortDefinitionsByName === null) {
-            $this->sortDefinitionsByName = [];
-        }
+        $this->sortDefinitionsByName = [];
+
         foreach ($this->sortDefinitions as $sortDefinition) {
             if (array_key_exists(
                 $sortDefinition->getName(),
@@ -57,30 +48,6 @@ class SortBag
             }
 
             $this->sortDefinitionsByName[$sortDefinition->getName()] = $sortDefinition;
-        }
-    }
-
-    public function getSortDefinitionByIndex(int $index): ?SortDefinition
-    {
-        if ($this->sortDefinitionsByIndex === null) {
-            $this->initNumericIndex();
-        }
-
-        return $this->sortDefinitionsByIndex[$index] ?? null;
-    }
-
-    private function initNumericIndex(): void
-    {
-        foreach ($this->sortDefinitions as $sortDefinition) {
-            if (!is_int($sortDefinition->getIndex())) {
-                throw new InvalidSortDefinitionException('SortDefinition does not have numeric index');
-            }
-
-            if (isset($this->sortDefinitionsByIndex[$sortDefinition->getIndex()])) {
-                throw new InvalidSortDefinitionException('SortDefinition with same index defined twice');
-            }
-
-            $this->sortDefinitionsByIndex[$sortDefinition->getIndex()] = $sortDefinition;
         }
     }
 

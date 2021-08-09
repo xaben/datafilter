@@ -10,21 +10,18 @@ class SortDefinition
 
     public const SORT_DESC = 'desc';
 
-    private string $name;
+    private string|int $name;
 
     private string $columnName;
-
-    private ?int $index;
 
     private ?string $defaultSortOrder;
 
     public function __construct(
-        string $name,
+        string|int $name,
         ?string $columnName = null,
-        ?int $index = null,
         ?string $defaultSortOrder = null
     ) {
-        if ($columnName === null) {
+        if ($columnName === null && !is_int($name)) {
             $columnName = $name;
         }
 
@@ -34,7 +31,6 @@ class SortDefinition
 
         $this->name = $name;
         $this->columnName = $columnName;
-        $this->index = $index;
         $this->defaultSortOrder = $defaultSortOrder;
     }
 
@@ -65,13 +61,8 @@ class SortDefinition
         ];
     }
 
-    public function getName(): string
+    public function getName(): string|int
     {
         return $this->name;
-    }
-
-    public function getIndex(): ?int
-    {
-        return $this->index;
     }
 }

@@ -14,14 +14,10 @@ class FilterBag
     /** @var Filter[] */
     private array $filtersByName;
 
-    /** @var Filter[] */
-    private array $filtersByIndex;
-
     public function __construct(array $filters = [])
     {
         $this->filters = $this->validateFilters($filters);
-        $this->filtersByIndex = [];
-        $this->filtersByName = [];
+        $this->indexByName();
     }
 
     private function validateFilters(array $filters): array
@@ -35,7 +31,7 @@ class FilterBag
         return $filters;
     }
 
-    public function getAllFilters(): array
+    public function getCriteria(): array
     {
         $criteria = [];
         foreach ($this->filters as $filter) {
@@ -45,20 +41,14 @@ class FilterBag
         return $criteria;
     }
 
-    public function getFilterByName(string $name): ?Filter
+    public function getFilter(string|int $name): ?Filter
     {
-        if ($this->filtersByName === []) {
-            $this->initNameIndex();
-        }
-
         return $this->filtersByName[$name] ?? null;
     }
 
-    private function initNameIndex(): void
+    private function indexByName(): void
     {
-        if ($this->filtersByName === null) {
-            $this->filtersByName = [];
-        }
+        $this->filtersByName = [];
 
         foreach ($this->filters as $filter) {
             if (array_key_exists(
@@ -69,30 +59,6 @@ class FilterBag
             }
 
             $this->filtersByName[$filter->getName()] = $filter;
-        }
-    }
-
-    public function getFilterByIndex(int $index): ?Filter
-    {
-        if ($this->filtersByIndex === []) {
-            $this->initNumericIndex();
-        }
-
-        return $this->filtersByIndex[$index] ?? null;
-    }
-
-    private function initNumericIndex(): void
-    {
-        foreach ($this->filters as $filter) {
-            if ($filter->getIndex() === null) {
-                throw new InvalidFilterException('Filter index is not defined');
-            }
-
-            if (isset($this->filtersByIndex[$filter->getIndex()])) {
-                throw new InvalidFilterException('Filter with same index defined twice');
-            }
-
-            $this->filtersByIndex[$filter->getIndex()] = $filter;
         }
     }
 }

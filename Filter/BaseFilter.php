@@ -6,11 +6,10 @@ namespace Xaben\DataFilter\Filter;
 
 use Exception;
 use Xaben\DataFilter\DataType\DataTypeInterface;
-use Xaben\DataFilter\Exception\InvalidFilterException;
 
 abstract class BaseFilter implements Filter
 {
-    protected string $name;
+    protected string|int $name;
 
     protected DataTypeInterface $dataType;
 
@@ -21,13 +20,13 @@ abstract class BaseFilter implements Filter
     private mixed $defaultValue;
 
     public function __construct(
-        string $name,
+        string | int $name,
         string | DataTypeInterface $dataType,
         string $columnName = null,
         array $options = [],
         mixed $defaultValue = null
     ) {
-        if ($columnName === null) {
+        if ($columnName === null && !is_int($name)) {
             $columnName = $name;
         }
 
@@ -51,22 +50,9 @@ abstract class BaseFilter implements Filter
         return $dataType;
     }
 
-    public function getName(): string
+    public function getName(): string|int
     {
         return $this->name;
-    }
-
-    public function getIndex(): ?int
-    {
-        if (!array_key_exists('index', $this->options) || $this->options['index'] === null) {
-            return null;
-        }
-
-        if (!is_int($this->options['index'])) {
-            throw new InvalidFilterException('Filter index is not numeric');
-        }
-
-        return $this->options['index'];
     }
 
     public function getDefaultFilter(): array

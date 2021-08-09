@@ -23,9 +23,7 @@ interface Filter
         mixed $defaultValue = null
     );
 
-    public function getName(): string;
-
-    public function getIndex(): ?int;
+    public function getName(): string|int;
 
     public function getFilter(mixed $value): array;
 
